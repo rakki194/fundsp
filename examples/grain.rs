@@ -171,9 +171,8 @@ where
         72.0, 74.0, 76.0, 79.0, 81.0, 84.0, 86.0, 88.0, 91.0, 93.0, 96.0,
     ];
 
-    //let mut dna = Dna::new(37);
     let mut dna = Dna::new(102);
-    let mut c = Net::wrap(fundsp::gen::gen_granular(2, &scale, 2.4, 30, &mut dna));
+    let mut c = Net::wrap(granular(2, &scale, 30, &mut dna));
 
     for parameter in dna.parameter_vector().iter() {
         info!("{}: {}", parameter.name(), parameter.value());
