@@ -133,7 +133,7 @@ fn main() {
         //population.sort_unstable_by(|a, b| b.fitness.partial_cmp(&a.fitness).unwrap());
 
         if improved || rounds % 1000 == 0 {
-            println!(
+            info!(
                 "Rounds {} (Accept {}%) Fitness {} Specimen {} Temp {}",
                 rounds,
                 accept as f32 * 100.0 / (accept + reject) as f32,
@@ -161,15 +161,15 @@ fn main() {
                     samples,
                 );
                 if i % 2 == 1 {
-                    println!();
+                    info!();
                 }
                 delays.push(delay);
             }
             samples1.sort();
             samples2.sort();
-            println!("{:?}", samples1);
-            println!("{:?}", samples2);
-            println!("{:?}", delays);
+            info!("{:?}", samples1);
+            info!("{:?}", samples2);
+            info!("{:?}", delays);
         }
     }
 }

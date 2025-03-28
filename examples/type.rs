@@ -88,5 +88,5 @@ fn main() {
     remove_string(&mut arg, "typenum::uint::");
     parse_uint(&mut arg);
 
-    println!("\n{}", arg);
+    info!("\n{}", arg);
 }

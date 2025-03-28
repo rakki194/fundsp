@@ -4,7 +4,7 @@ use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{FromSample, SizedSample};
 use fundsp::hacker32::*;
 
-use crossbeam_channel::{bounded, Receiver, Sender};
+use crossbeam_channel::{Receiver, Sender, bounded};
 
 #[derive(Clone)]
 pub struct InputNode {
@@ -41,7 +41,7 @@ fn main() {
         cpal::SampleFormat::F32 => run_in::<f32>(&in_device, &in_config.into(), sender),
         cpal::SampleFormat::I16 => run_in::<i16>(&in_device, &in_config.into(), sender),
         cpal::SampleFormat::U16 => run_in::<u16>(&in_device, &in_config.into(), sender),
-        format => eprintln!("Unsupported sample format: {}", format),
+        format => error!("Unsupported sample format: {}", format),
     }
     // Start output.
     let out_device = host.default_output_device().unwrap();
@@ -50,9 +50,9 @@ fn main() {
         cpal::SampleFormat::F32 => run_out::<f32>(&out_device, &out_config.into(), receiver),
         cpal::SampleFormat::I16 => run_out::<i16>(&out_device, &out_config.into(), receiver),
         cpal::SampleFormat::U16 => run_out::<u16>(&out_device, &out_config.into(), receiver),
-        format => eprintln!("Unsupported sample format: {}", format),
+        format => error!("Unsupported sample format: {}", format),
     }
-    println!("Processing stereo input to stereo output.");
+    info!("Processing stereo input to stereo output.");
     loop {
         std::thread::sleep(std::time::Duration::from_secs(1));
     }
@@ -64,7 +64,7 @@ where
     f32: FromSample<T>,
 {
     let channels = config.channels as usize;
-    let err_fn = |err| eprintln!("an error occurred on stream: {}", err);
+    let err_fn = |err| error!("an error occurred on stream: {}", err);
     let stream = device.build_input_stream(
         config,
         move |data: &[T], _: &cpal::InputCallbackInfo| read_data(data, channels, sender.clone()),
@@ -76,7 +76,7 @@ where
             std::mem::forget(stream);
         }
     }
-    println!("Input stream built.");
+    info!("Input stream built.");
 }
 
 fn read_data<T>(input: &[T], channels: usize, sender: Sender<(f32, f32)>)
@@ -114,7 +114,7 @@ where
 
     let mut next_value = move || graph.get_stereo();
 
-    let err_fn = |err| eprintln!("An error occurred on stream: {}", err);
+    let err_fn = |err| error!("An error occurred on stream: {}", err);
     let stream = device.build_output_stream(
         config,
         move |data: &mut [T], _: &cpal::OutputCallbackInfo| {
@@ -128,7 +128,7 @@ where
             std::mem::forget(stream);
         }
     }
-    println!("Output stream built.");
+    info!("Output stream built.");
 }
 
 fn write_data<T>(output: &mut [T], channels: usize, next_sample: &mut dyn FnMut() -> (f32, f32))

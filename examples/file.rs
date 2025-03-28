@@ -1,6 +1,7 @@
 //! Save and load an audio file.
 
 use fundsp::hacker32::*;
+use log::info;
 
 fn main() {
     let wave1 = Wave::render(44100.0, 10.0, &mut (pink()));
@@ -16,5 +17,5 @@ fn main() {
     assert_eq!(wave1.len(), wave2.len());
     assert_eq!(wave1.at(0, 0), wave2.at(0, 0));
 
-    println!("OK.");
+    info!("OK.");
 }

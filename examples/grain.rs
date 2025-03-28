@@ -5,6 +5,7 @@ use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{FromSample, SizedSample};
 use fundsp::hacker::*;
 use funutd::dna::*;
+use log::{error, info};
 
 fn main() {
     let host = cpal::default_host();
@@ -175,7 +176,7 @@ where
     let mut c = Net::wrap(fundsp::gen::gen_granular(2, &scale, 2.4, 30, &mut dna));
 
     for parameter in dna.parameter_vector().iter() {
-        println!("{}: {}", parameter.name(), parameter.value());
+        info!("{}: {}", parameter.name(), parameter.value());
     }
 
     c = c
@@ -189,7 +190,7 @@ where
 
     let mut next_value = move || c.get_stereo();
 
-    let err_fn = |err| eprintln!("an error occurred on stream: {}", err);
+    let err_fn = |err| error!("an error occurred on stream: {}", err);
 
     let stream = device.build_output_stream(
         config,

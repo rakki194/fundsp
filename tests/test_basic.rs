@@ -30,14 +30,14 @@ fn check_wave(mut node: impl AudioUnit) {
         let process_y = wave.at(1, i);
         let tolerance = 1.0e-4;
         if tick_x - tolerance > process_x || tick_x + tolerance < process_x {
-            eprintln!(
+            error!(
                 "channel 0 index {} tick {} process {}",
                 i, tick_x, process_x
             );
         }
         assert!(tick_x - tolerance <= process_x && tick_x + tolerance >= process_x);
         if tick_y - tolerance > process_y || tick_y + tolerance < process_y {
-            eprintln!(
+            error!(
                 "channel 1 index {} tick {} process {}",
                 i, tick_y, process_y
             );

@@ -40,21 +40,21 @@ where
     let mut c = gen_granular(1, &scale, 2.0, 30, &mut dna);
 
     for parameter in dna.parameter_vector().iter() {
-        println!("{}: {}", parameter.name(), parameter.value());
+        info!("{}: {}", parameter.name(), parameter.value());
     }
 
     let mut dna2 = Dna::new(4);
     let mut fx = gen_effect(&mut dna2);
     for parameter in dna2.parameter_vector().iter() {
-        println!("{}: {}", parameter.name(), parameter.value());
+        info!("{}: {}", parameter.name(), parameter.value());
     }
 
-    println!("Rendering...");
+    info!("Rendering...");
     let wave = Wave::render(sample_rate, 10.0, &mut *c);
     let mut wave2 = wave.filter(10.0, &mut *fx);
     wave2.normalize();
     let wave_arc = std::sync::Arc::new(wave2);
-    println!("OK.");
+    info!("OK.");
 
     let granular = Granular::new(
         2,
@@ -94,7 +94,7 @@ where
 
     let mut next_value = move || c.get_stereo();
 
-    let err_fn = |err| eprintln!("an error occurred on stream: {}", err);
+    let err_fn = |err| error!("an error occurred on stream: {}", err);
 
     let stream = device.build_output_stream(
         config,

@@ -123,5 +123,5 @@ fn main() {
 
     wave.save_wav16(std::path::Path::new("sequence.wav"))
         .expect("Could not save sequence.wav");
-    println!("sequence.wav written.");
+    info!("sequence.wav written.");
 }

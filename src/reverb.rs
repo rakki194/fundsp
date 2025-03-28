@@ -86,7 +86,7 @@ pub fn reverb_fitness(reverb: An<impl AudioNode<Inputs = U2, Outputs = U2>>) -> 
             //fitness -= aw * squared(norm2) * spectral_weight;
             //fitness -= norm2 * spectral_weight;
             let norm = sqrt(norm2);
-            println!("Bin {} frequency {} magnitude {}", i, f, norm);
+            info!("Bin {} frequency {} magnitude {}", i, f, norm);
             spectral_no += aw * log(norm).max(-30.0);
             spectral_de += aw * norm;
             spectral_to += aw;
@@ -120,7 +120,7 @@ pub fn reverb_fitness(reverb: An<impl AudioNode<Inputs = U2, Outputs = U2>>) -> 
         }
         c2r.process(&mut spectrum, &mut data).unwrap();
         let z = if data[0] > 0.0 { 1.0 / data[0] } else { 0.0 };
-        //println!("data[0] = {}, data[1000..1010] = {:?}, data[10000..10010] = {:?}", data[0], &data[1000..1010], &data[10000..10010]);
+        //info!("data[0] = {}, data[1000..1010] = {:?}, data[10000..10010] = {:?}", data[0], &data[1000..1010], &data[10000..10010]);
         // Now `data[i] * z` is a normalized autocorrelation ranging in -1...1 for a lag of `i` samples.
 
         // Minimize autocorrelation.

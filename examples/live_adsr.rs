@@ -22,7 +22,7 @@
 use anyhow::bail;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Device, FromSample, SampleFormat, SizedSample, StreamConfig};
-use fundsp::hacker::{adsr_live, midi_hz, shared, triangle, var, Shared};
+use fundsp::hacker::{Shared, adsr_live, midi_hz, shared, triangle, var};
 use fundsp::prelude::AudioUnit;
 use midi_msg::{ChannelVoiceMsg, MidiMsg};
 use midir::{Ignore, MidiInput, MidiInputPort};
@@ -79,7 +79,7 @@ fn get_midi_device(midi_in: &mut MidiInput) -> anyhow::Result<MidiInputPort> {
     if in_ports.is_empty() {
         bail!("No MIDI devices attached")
     } else {
-        println!(
+        info!(
             "Chose MIDI device {}",
             midi_in.port_name(&in_ports[0]).unwrap()
         );
@@ -104,7 +104,7 @@ fn run_input(
     pitch_bend: Shared,
     control: Shared,
 ) -> anyhow::Result<()> {
-    println!("\nOpening connection");
+    info!("\nOpening connection");
     let in_port_name = midi_in.port_name(&in_port)?;
     let _conn_in = midi_in
         .connect(
@@ -113,7 +113,7 @@ fn run_input(
             move |_stamp, message, _| {
                 let (msg, _len) = MidiMsg::from_midi(message).unwrap();
                 if let MidiMsg::ChannelVoice { channel: _, msg } = msg {
-                    println!("Received {msg:?}");
+                    info!("Received {msg:?}");
                     match msg {
                         ChannelVoiceMsg::NoteOn { note, velocity } => {
                             pitch.set_value(midi_hz(note as f32));
@@ -136,10 +136,10 @@ fn run_input(
             (),
         )
         .unwrap();
-    println!("Connection open, reading input from '{in_port_name}'");
+    info!("Connection open, reading input from '{in_port_name}'");
 
     let _ = input::<String>().msg("(press enter to exit)...\n").get();
-    println!("Closing connection");
+    info!("Closing connection");
     Ok(())
 }
 
@@ -181,7 +181,7 @@ fn run_synth<T: SizedSample + FromSample<f64>>(
 
         let mut next_value = move || sound.get_stereo();
         let channels = config.channels as usize;
-        let err_fn = |err| eprintln!("an error occurred on stream: {err}");
+        let err_fn = |err| error!("an error occurred on stream: {err}");
         let stream = device
             .build_output_stream(
                 &config,

@@ -61,7 +61,7 @@ where
         let reported = Complex32::new(reported.re as f32, reported.im as f32);
         let response = spectrum[i];
         if !is_equal_response(reported, response) {
-            eprintln!(
+            error!(
                 "{} Hz reported ({}, {}) measured ({}, {})",
                 f_i,
                 reported.norm(),

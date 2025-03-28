@@ -5,6 +5,7 @@ use assert_no_alloc::*;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{FromSample, SizedSample};
 use fundsp::hacker::*;
+use log::error;
 
 #[cfg(debug_assertions)] // required when disable_release is set (default)
 #[global_allocator]
@@ -109,7 +110,7 @@ where
 
     let mut next_value = move || assert_no_alloc(|| c.get_stereo());
 
-    let err_fn = |err| eprintln!("an error occurred on stream: {}", err);
+    let err_fn = |err| error!("an error occurred on stream: {}", err);
 
     let stream = device.build_output_stream(
         config,
